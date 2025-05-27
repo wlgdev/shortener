@@ -18,7 +18,7 @@ jobs:
             ./src
             ./docs
           target:
-            short:shortener:8080
+            cc:shortener:8080
           env:
             DEFAULT_DOMAIN=cc.wlg.tv
             GEOLITE_KEY=${{ vars.SHORTENER_GEOLITE_KEY }}

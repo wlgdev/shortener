@@ -14,7 +14,7 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
-  #    network_mode: host #The port is used = 8080
+#    network_mode: host #The port is used = 8080
   restarter: # Restarts shortener on a period of time (sleep 604_800 = 7 days)
     image: docker
     volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
@@ -29,3 +29,4 @@ services:
     depends_on:
       - shortener
     command: ["/bin/sh", "-c", "docker exec -t shortener shlink api-key:generate"]
+#   fake line
