@@ -7,18 +7,18 @@
   </a>
 </div>
 <h1 align="center">
-  REPOSITORY NAME
+  URL SHORTENER
 </h1>
 
 <p align="center">
-   very short (1–2 lines) repository description
+   https://cc.wlg.tv/ - allows to shorten long urls
 </p>
 
 <div align="center">
-  📦 :octocat:
+  📦 :octocat: 🩳
 </div>
 <div align="center">
-  <img src="./docs/description.webp" alt="description"/>
+  <img src="./docs/shortener.jpg" alt="description"/>
 </div>
 
 <!-- TABLE OF CONTENT -->
@@ -52,28 +52,34 @@
 <br>
 
 ## 📃 Description
-General information about repo
+This repository allows creating short links for the long URLs
+the benefit to have it:
+* all long urls can be shortened to be remembered
+* the number of visits can be easily exported
+* helpful to wrap some advertisements
+
+it has a parallel running container: mariadb
+* container host name: `clo0i9fui005krw9s39n760if`
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
-* [language + version](https://example.com)
-* [framework name](https://example.com)
+* [shlink](https://shlink.io/)
 
 ## 🪧 Getting Started
-installation/build instructions\
-including frameworks info it mainly uses
+to start just execute docker compose deployment
 
 ### Prerequisites
-required tools/programs to be installed for using it
+docker to be installed
 
 ### Installation
-installation steps/build setup information
+to start just execute docker compose deployment
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## ⚠️ How to use
-some usage examples
+to be able to login it requires access code to be generated from inside of docker container\
+command: `docker exec -t container_name shlink api-key:generate`
 
 ### Possible Exceptions
 some errors, if any
@@ -81,11 +87,11 @@ some errors, if any
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## ⬆️ Deployment
-how to deploy
+run the deployment workflow in GitHub actions
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## 🔗 Reference
-some reference links to documentations
+* [shlink](https://shlink.io/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>

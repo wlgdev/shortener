@@ -1,0 +1,31 @@
+services:
+  shortener:
+    image: shlinkio/shlink:3.6.4
+    environment:
+      - DEFAULT_DOMAIN=${DEFAULT_DOMAIN}
+      - IS_HTTPS_ENABLED=true
+      - ENABLE_PERIODIC_VISIT_LOCATE=true
+      - GEOLITE_LICENSE_KEY=${GEOLITE_KEY}
+      - DB_DRIVER=maria
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+  #    network_mode: host #The port is used = 8080
+  restarter: # Restarts shortener on a period of time (sleep 604_800 = 7 days)
+    image: docker
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command: ["/bin/sh", "-c", "while true; do sleep 604800; docker restart shortener; done"]
+    restart: unless-stopped
+    depends_on:
+      - shortener
+  generator: # Generates login key at startup
+    image: docker
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command: ["/bin/sh", "-c", "docker exec -t shortener shlink api-key:generate"]
+    restart: unless-stopped
+    depends_on:
+      - shortener

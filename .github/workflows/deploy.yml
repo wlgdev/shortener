@@ -1,0 +1,30 @@
+name: deploy docker-compose
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: deploy
+        uses: ./.github/actions/deploy/compose
+        with:
+          ssh_private_key: ${{ secrets.WLGDEV_SSH_PRIVATE_KEY }}
+          ssh_private_host: ${{ secrets.WLGDEV_SSH_PRIVATE_HOST }}
+          ssh_private_port: ${{ secrets.WLGDEV_SSH_PRIVATE_PORT }}
+          ssh_private_user: ${{ secrets.WLGDEV_SSH_PRIVATE_USER }}
+          delete_before_deploy:
+            ./src
+            ./docs
+          target:
+            short:shortener:8080
+          env:
+            DEFAULT_DOMAIN=cc.wlg.tv
+            GEOLITE_KEY=${{ vars.SHORTENER_GEOLITE_KEY }}
+            DB_USER=${{ secrets.SHORTENER_DB_USER }}
+            DB_PASSWORD=${{ secrets.SHORTENER_DB_PASSWORD }}
+            DB_HOST=${{ secrets.SHORTENER_DB_HOST }}
+            DB_PORT=${{ secrets.SHORTENER_DB_PORT }}
+          joiner_container:
+            clo0i9fui005krw9s39n760if
