@@ -29,4 +29,3 @@ services:
     depends_on:
       - shortener
     command: ["/bin/sh", "-c", "docker exec -t shortener-shortener-1 shlink api-key:generate"]
-#   fake line
