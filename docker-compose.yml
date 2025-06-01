@@ -1,6 +1,6 @@
 services:
   shortener:
-    image: shlinkio/shlink:3.6.4
+    image: shlinkio/shlink:4.4.6
     environment:
       - DEFAULT_DOMAIN=${DEFAULT_DOMAIN}
       - IS_HTTPS_ENABLED=true
@@ -25,7 +25,7 @@ services:
   generator: # Generates login key at startup
     image: docker
     volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
-    restart: unless-stopped
+    restart: no
     depends_on:
       - shortener
     command: ["/bin/sh", "-c", "docker exec -t shortener-shortener-1 shlink api-key:generate"]
