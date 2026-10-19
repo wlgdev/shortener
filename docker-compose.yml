@@ -2,16 +2,16 @@ services:
   shortener:
     image: ${SERVICE_IMAGE_NAME}:${SERVICE_IMAGE_TAG}
     environment:
-      - DEFAULT_DOMAIN=${DEFAULT_DOMAIN}
-      - INITIAL_API_KEY=${INITIAL_API_KEY}
-      - IS_HTTPS_ENABLED=true
-      - GEOLITE_LICENSE_KEY=${GEOLITE_KEY}
-      - DB_DRIVER=maria
-      - DB_NAME=shortener
-      - DB_USER=shortener
-      - DB_PASSWORD=${DB_USER_PASSWORD}
-      - DB_HOST=db
-      - DB_PORT=3306
+      DEFAULT_DOMAIN: "${DEFAULT_DOMAIN:?Set DEFAULT_DOMAIN}"
+      INITIAL_API_KEY: "${INITIAL_API_KEY:?Set INITIAL_API_KEY}"
+      IS_HTTPS_ENABLED: "true"
+      GEOLITE_LICENSE_KEY: "${GEOLITE_KEY:?Set GEOLITE_KEY}"
+      DB_DRIVER: "maria"
+      DB_NAME: "shortener"
+      DB_USER: "shortener"
+      DB_PASSWORD: "${DB_USER_PASSWORD:?Set DB_USER_PASSWORD}"
+      DB_HOST: "db"
+      DB_PORT: "3306"
     # Retain database connectivity when the deploy action adds proxy-network.
     networks:
       default: {}
@@ -38,10 +38,10 @@ services:
       PGID: "1000"
       TZ: "Europe/Moscow"
 
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD}"
       MYSQL_DATABASE: "shortener"
       MYSQL_USER: "shortener"
-      MYSQL_PASSWORD: ${DB_USER_PASSWORD}
+      MYSQL_PASSWORD: "${DB_USER_PASSWORD:?Set DB_USER_PASSWORD}"
     networks:
       default: {}
     volumes:
