@@ -1,62 +1,30 @@
-# File .github/workflows/publish-release.yml
+name: deploy-prod
 
-# Runs on creating a new release tag (when this release marked as published),
-# this workflow publishes artifact and does increment the next SNAPSHOT version
-
-name: publish RELEASE
 on:
-  release:
-    types:
-      - published
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
 
 jobs:
-  repository: # SERVICE LEVEL - CHECK AND SHARE VARIABLES
-    if: ${{ !startsWith(github.repository, 'wlgdev/template-') }}
-    runs-on: ubuntu-latest
-    outputs:
-      type: ${{ steps.validate.outputs.type }}
-      language: ${{ steps.validate.outputs.language }}
-      environment: ${{ steps.validate.outputs.environment }}
-    env:
-      REPOSITORY_TYPE:     $(jq -r '.repository.custom_properties.type     | select(. != null and . != "unknown") // "default"' < "$GITHUB_EVENT_PATH")
-      REPOSITORY_LANGUAGE: $(jq -r '.repository.custom_properties.language | select(. != null and . != "unknown") // "default"' < "$GITHUB_EVENT_PATH")
-    steps:
-      - name: validate repository type
-        id: validate
-        run: |
-          echo "repository type:     ${{ env.REPOSITORY_TYPE }}"
-          echo "repository language: ${{ env.REPOSITORY_LANGUAGE }}"
-          echo "type=${{ env.REPOSITORY_TYPE }}" >> $GITHUB_OUTPUT
-          echo "language=${{ env.REPOSITORY_LANGUAGE }}" >> $GITHUB_OUTPUT
-          echo "environment=PRODUCTION" >> $GITHUB_OUTPUT
-
   deploy:
-    environment: ${{ needs.repository.outputs.environment }}
-    needs:
-      - repository
+    if: ${{ !startsWith(github.repository, 'wlgdev/template-') }}
+    environment: PRODUCTION
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: deploy
-        id: deploy
-        uses: ./.github/actions/deploy/compose/traefik
+      - name: Trigger deploy
+        uses: wlgdev/deploy/.github/actions/deploy@main
         with:
-          ssh_private_key:  ${{ secrets.WLGDEV_SSH_PRIVATE_KEY }}
-          ssh_private_host: ${{ secrets.WLGDEV_SSH_PRIVATE_HOST }}
-          ssh_private_port: ${{ secrets.WLGDEV_SSH_PRIVATE_PORT }}
-          ssh_private_user: ${{ secrets.WLGDEV_SSH_PRIVATE_USER }}
-          delete_before_deploy:
-            ./src
-            ./docs
-          compose_file: './docker-compose.yml'
-          target:
-            cc:shortener:8080
-          env:
+          pat: ${{ secrets.DEPLOY_TRIGGER_PAT }}
+          target: "cc:shortener:8080"
+          is_dev: "false"
+          # Keep these coordinates aligned with docker-compose.yml.
+          service_image_name: shlinkio/shlink
+          service_image_tag: "5.1.7"
+          env: |
             DEFAULT_DOMAIN=cc.wlg.tv
+            INITIAL_API_KEY=${{ secrets.SHORTENER_INITIAL_API_KEY }}
             GEOLITE_KEY=${{ vars.SHORTENER_GEOLITE_KEY }}
-            DB_USER=${{ secrets.SHORTENER_DB_USER }}
-            DB_PASSWORD=${{ secrets.SHORTENER_DB_PASSWORD }}
-            DB_HOST=${{ secrets.SHORTENER_DB_HOST }}
-            DB_PORT=${{ secrets.SHORTENER_DB_PORT }}
-          joiner_container:
-            clo0i9fui005krw9s39n760if
+            DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}
+            DB_USER_PASSWORD=${{ secrets.DB_USER_PASSWORD }}
